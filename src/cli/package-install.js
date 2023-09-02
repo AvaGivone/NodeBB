@@ -103,7 +103,7 @@ function getPackageManagerByLockfile() {
 }
 
 pkgInstall.installAll = () => {
-    const prod = process.env.NODE_ENV !== 'development';
+    const prod = process.env.NODE_ENV === 'production';
     let command = 'npm install';
 
     const supportedPackageManagerList = exports.supportedPackageManager; // load config from src/cli/package-install.js
