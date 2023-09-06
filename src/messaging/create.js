@@ -42,17 +42,6 @@ module.exports = function (Messaging) {
             }
         });
     }
-    function addRoomToUsers(roomId, uids, timestamp) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!uids.length) {
-                return;
-            }
-            const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
-            // The next line calls a function in a module that has not been updated to TS yet
-            //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-            yield database_1.default.sortedSetsAdd(keys, timestamp, roomId);
-        });
-    }
     function addMessageToUsers(roomId, uids, mid, timestamp) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!uids.length) {
@@ -62,6 +51,17 @@ module.exports = function (Messaging) {
             // The next line calls a function in a module that has not been updated to TS yet
             //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             yield database_1.default.sortedSetsAdd(keys, timestamp, mid);
+        });
+    }
+    function addRoomToUsers(roomId, uids, timestamp) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!uids.length) {
+                return;
+            }
+            const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
+            // The next line calls a function in a module that has not been updated to TS yet
+            //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            yield database_1.default.sortedSetsAdd(keys, timestamp, roomId);
         });
     }
     function addMessage(data) {

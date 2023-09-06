@@ -16,7 +16,7 @@ interface MessagingConfig {
     checkContent: (content: string) => Promise<void>;
     isUserInRoom: (uid: number, roomId: number) => Promise<boolean>;
     addMessage: (data: { content: string, uid: number, roomId: number, system: number}) => Promise<void>;
-    addRoomToUsers: (roomId: number, uids:number[], timestamp:number) => Promise<void>;
+    addRoomToUsers: (roomId: number, uids:number[], timestamp:number) => void;
     addMessageToUsers: (roomId: number, uids:number[], mid:number, timestamp:number) => Promise<void>;
     markUnread: (uids: number[], roomId: number) => Promise<void>;
     getMessagesData: (mid: number[], uid: number, roomId: number, isOwner: boolean) => Promise<string>;
@@ -55,16 +55,6 @@ export = function (Messaging: MessagingConfig) {
         }
     }
 
-    async function addRoomToUsers(roomId: number, uids:number[], timestamp:number) {
-        if (!uids.length) {
-            return;
-        }
-
-        const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
-        // The next line calls a function in a module that has not been updated to TS yet
-        //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        await db.sortedSetsAdd(keys, timestamp, roomId);
-    }
 
     async function addMessageToUsers(roomId: number, uids:number[], mid:number, timestamp:number) {
         if (!uids.length) {
@@ -74,6 +64,17 @@ export = function (Messaging: MessagingConfig) {
         // The next line calls a function in a module that has not been updated to TS yet
         //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         await db.sortedSetsAdd(keys, timestamp, mid);
+    }
+
+    async function addRoomToUsers(roomId: number, uids:number[], timestamp:number) {
+        if (!uids.length) {
+            return;
+        }
+
+        const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
+        // The next line calls a function in a module that has not been updated to TS yet
+        //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        await db.sortedSetsAdd(keys, timestamp, roomId);
     }
 
 
@@ -162,3 +163,4 @@ export = function (Messaging: MessagingConfig) {
         return await addMessage(data);
     }
 };
+
