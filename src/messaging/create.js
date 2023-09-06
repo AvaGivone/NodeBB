@@ -45,7 +45,7 @@ module.exports = function (Messaging) {
     function addRoomToUsers(roomId, uids, timestamp) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!uids.length) {
-                return [];
+                return;
             }
             const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
             // The next line calls a function in a module that has not been updated to TS yet
@@ -97,6 +97,8 @@ module.exports = function (Messaging) {
             uids = (yield user_1.default.blocks.filterUids(data.uid, uids));
             yield Promise.all([
                 addRoomToUsers(data.roomId, uids, timestamp),
+                // The next line calls a function in a module that has not been updated to TS yet
+                //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
                 addMessageToUsers(data.roomId, uids, mid, timestamp),
                 // The next line calls a function in a module that has not been updated to TS yet
                 //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call

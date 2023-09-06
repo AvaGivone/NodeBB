@@ -14,13 +14,13 @@ import { isNewSet } from './index';
 interface MessagingConfig {
     // sendMessage: (data: { content: string; uid: string; roomId: string }) => Promise<void>;
     checkContent: (content: string) => Promise<void>;
-    isUserInRoom: (uid: string, roomId: string) => Promise<boolean>;
-    addMessage: (data: { content: string, uid: string, roomId: string, system: number}) => Promise<void>;
-    addRoomToUsers: (roomId: string, uids:string[], timestamp:number) => Promise<string[]>;
-    addMessageToUsers: (roomId: string, uids:string[], mid:number, timestamp:number) => Promise<void>;
-    markUnread: (uids: string[], roomId: string) => Promise<void>;
-    getMessagesData: (mid: string[], uid: string, roomId: string, isOwner: boolean) => Promise<string>;
-    addSystemMessage: (content: string, uid: string, roomId: string) => Promise<void>;
+    isUserInRoom: (uid: number, roomId: number) => Promise<boolean>;
+    addMessage: (data: { content: string, uid: number, roomId: number, system: number}) => Promise<void>;
+    addRoomToUsers: (roomId: number, uids:number[], timestamp:number) => Promise<void>;
+    addMessageToUsers: (roomId: number, uids:number[], mid:number, timestamp:number) => Promise<void>;
+    markUnread: (uids: number[], roomId: number) => Promise<void>;
+    getMessagesData: (mid: number[], uid: number, roomId: number, isOwner: boolean) => Promise<string>;
+    addSystemMessage: (content: string, uid: number, roomId: number) => Promise<void>;
 }
 
 interface CustomData {
@@ -57,7 +57,7 @@ export = function (Messaging: MessagingConfig) {
 
     async function addRoomToUsers(roomId: number, uids:number[], timestamp:number) {
         if (!uids.length) {
-            return [];
+            return;
         }
 
         const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
@@ -65,6 +65,7 @@ export = function (Messaging: MessagingConfig) {
         //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         await db.sortedSetsAdd(keys, timestamp, roomId);
     }
+
     async function addMessageToUsers(roomId: number, uids:number[], mid:number, timestamp:number) {
         if (!uids.length) {
             return;
@@ -110,6 +111,8 @@ export = function (Messaging: MessagingConfig) {
 
         await Promise.all([
             addRoomToUsers(data.roomId, uids, timestamp),
+            // The next line calls a function in a module that has not been updated to TS yet
+            //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
             addMessageToUsers(data.roomId, uids, mid, timestamp),
             // The next line calls a function in a module that has not been updated to TS yet
             //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
