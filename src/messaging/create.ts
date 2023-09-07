@@ -9,6 +9,7 @@ import { getMessagesData } from './data';
 import { isNewSet } from './index';
 
 
+
 /*  eslint-disable max-len */
 
 interface MessagingConfig {
@@ -16,7 +17,7 @@ interface MessagingConfig {
     checkContent: (content: string) => Promise<void>;
     isUserInRoom: (uid: number, roomId: number) => Promise<boolean>;
     addMessage: (data: { content: string, uid: number, roomId: number, system: number}) => Promise<void>;
-    addRoomToUsers: (roomId: number, uids:number[], timestamp:number) => void;
+    addRoomToUsers: (roomId: number, uids:number[], timestamp:number) => Promise<void>;
     addMessageToUsers: (roomId: number, uids:number[], mid:number, timestamp:number) => Promise<void>;
     markUnread: (uids: number[], roomId: number) => Promise<void>;
     getMessagesData: (mid: number[], uid: number, roomId: number, isOwner: boolean) => Promise<string>;
@@ -76,6 +77,7 @@ export = function (Messaging: MessagingConfig) {
         //  eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         await db.sortedSetsAdd(keys, timestamp, roomId);
     }
+
 
 
     async function addMessage(data: CustomData) {
@@ -163,4 +165,6 @@ export = function (Messaging: MessagingConfig) {
         return await addMessage(data);
     }
 };
+
+
 
